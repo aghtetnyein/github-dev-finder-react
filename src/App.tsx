@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// https://docs.github.com/en/rest/users#get-a-user
+
 // icons
 import {
   SunIcon,

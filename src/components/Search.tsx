@@ -8,7 +8,7 @@ const Search = () => {
         <MagnifyingGlassIcon className="w-6 h-6" />
         <input
           type="text"
-          className="w-full md:w-[20rem] border-none outline-none p-3 bg-transparent text-[0.9rem] placeholder:text-primaryDark dark:placeholder:text-primaryLight"
+          className="w-full md:w-[20rem] border-none outline-none p-3 bg-transparent text-[0.9rem] placeholder:text-primaryDark dark:placeholder:text-gray-300"
           placeholder="Search Github username ..."
         />
       </div>
