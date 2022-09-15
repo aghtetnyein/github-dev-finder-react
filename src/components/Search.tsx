@@ -1,7 +1,13 @@
 // icons
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
 
-const Search = () => {
+interface ISearchProps {
+  value: string;
+  onChange: any;
+  onclick : any;
+}
+const Search = ({onChange,onclick,value}:ISearchProps) => {
   return (
     <div className="w-full flex justify-between items-center p-2 gap-4 bg-secondaryLight dark:bg-secondaryDark rounded-md">
       <div className="ml-2 md:ml-4 flex items-center gap-4">
@@ -10,9 +16,11 @@ const Search = () => {
           type="text"
           className="w-full md:w-[20rem] border-none outline-none p-3 bg-transparent text-[0.9rem] placeholder:text-primaryDark dark:placeholder:text-gray-300"
           placeholder="Search Github username ..."
+          value={value}
+          onChange={onChange}
         />
       </div>
-      <button className="py-3 px-4 rounded-md bg-blue text-[0.8rem] font-bold text-white">
+      <button className="py-3 px-4 rounded-md bg-blue text-[0.8rem] font-bold text-white" onClick={onclick}>
         Search
       </button>
     </div>
