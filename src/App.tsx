@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import moment from 'moment';
 
 // https://docs.github.com/en/rest/users#get-a-user
 
@@ -52,7 +53,7 @@ function App() {
 		fetch(`https://api.github.com/users/${value}`).then((response) =>
 			response.json().then((data) => {
 				setUser(data);
-        console.log(data)
+        	console.log(data)
 			})
 		);
 	};
@@ -93,11 +94,11 @@ function App() {
 					<div>
 						{/* name and joined date */}
 						<div className="flex items-center justify-between gap-4">
-							<p className="text-[1.2rem] font-bold">The Octocat</p>
-							<p className="text-[0.8rem]">Joined 28 Jun 2011</p>
+							<p className="text-[1.2rem] font-bold">{user?.login}</p>
+							<p className="text-[0.8rem]">Joined : {moment(user?.created_at).format('DD MMM YYYY')}</p>
 						</div>
 						{/* username */}
-						<p className="text-[0.8rem] text-red font-bold">The Octocat</p>
+						<p className="text-[0.8rem] text-red font-bold">{user?.name}</p>
 						{/* bio */}
 						<p className="my-6 text-[0.8rem]">{user?.bio ? user.bio : "This profile has no bio"} </p>
 						{/* repo, followers and following */}
@@ -127,19 +128,19 @@ function App() {
 									href="https://twitter.com/elonmusk"
 									className="text-[0.8rem]"
 								>
-									elonmusk
+									{user.twitter_username ? user.twitter_username : "-"}
 								</a>
 							</div>
 							<div className="flex items-center gap-3">
 								<LinkIcon className="w-6 h-6" />
 								<a href="https://www.tesla.com/" className="text-[0.8rem]">
-									Tesla
+									{user.blog ? user.blog : "-"}
 								</a>
 							</div>
 							<div className="flex items-center gap-3">
 								<GithubIcon className="w-6 h-6" />
-								<a href="https://www.tesla.com/" className="text-[0.8rem]">
-									elonmusk
+								<a href={user?.html_url} className="text-[0.8rem]" target="_blank">
+									{user?.name}
 								</a>
 							</div>
 						</div>
