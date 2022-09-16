@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import moment from 'moment';
+import { Fragment, useEffect, useState } from "react";
+import moment from "moment";
 
 // https://docs.github.com/en/rest/users#get-a-user
 
@@ -20,7 +20,9 @@ function App() {
 	// states
 	const [theme, setTheme] = useState(localStorage.theme || "light");
 	const [value, setValue] = useState("");
-  const [user, setUser]:any = useState({});
+	const [user, setUser]: any = useState({});
+	const [error, setError] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (
@@ -50,15 +52,21 @@ function App() {
 
 	const clickHandler = () => {
 		// console.log(value)
-		fetch(`https://api.github.com/users/${value}`).then((response) =>
-			response.json().then((data) => {
-				setUser(data);
-        	console.log(data)
+		fetch(`https://api.github.com/users/${value}`)
+			.then((response) => {
+				return response.json();
+				// console.log(data)
 			})
-		);
+			.then((data) => {
+				setUser(data);
+				setLoading(false);
+				console.log(value);
+			})
+			.catch((err) => {
+				setError(true);
+				setLoading(true);
+			});
 	};
-
-
 
 	return (
 		<div className="w-screen h-screen bg-primaryLight dark:bg-primaryDark flex flex-col items-center justify-center gap-8 text-primaryDark dark:text-primaryLight">
@@ -84,68 +92,96 @@ function App() {
 					value={value}
 					onclick={clickHandler}
 				/>
-
-				<div className="w-full flex flex-col md:flex-row p-6 gap-12 bg-secondaryLight dark:bg-secondaryDark rounded-md">
-					<img
-						className="w-24 h-24 rounded-full object-cover"
-						src={user.avatar_url}
-						alt="profile"
-					/>
-					<div>
-						{/* name and joined date */}
-						<div className="flex items-center justify-between gap-4">
-							<p className="text-[1.2rem] font-bold">{user?.login}</p>
-							<p className="text-[0.8rem]">Joined : {moment(user?.created_at).format('DD MMM YYYY')}</p>
-						</div>
-						{/* username */}
-						<p className="text-[0.8rem] text-red font-bold">{user?.name}</p>
-						{/* bio */}
-						<p className="my-6 text-[0.8rem]">{user?.bio ? user.bio : "This profile has no bio"} </p>
-						{/* repo, followers and following */}
-						<div className="my-8 bg-primaryLight dark:bg-primaryDark grid grid-cols-3 items-center md:gap-20 px-6 py-4 rounded-md">
-							<div className="flex flex-col items-center">
-								<p className="text-[0.8rem]">Repos</p>
-								<p className="text-[1rem] font-bold">{user?.public_repos}</p>
+				{value === "" && (
+					<div className="w-full text-center p-6 bg-secondaryLight dark:bg-secondaryDark rounded-md">
+						Type Github Username to search Dev...
+					</div>
+				)}
+				{value !== "" && user.message !== "Not Found" && (
+					<div className="w-full flex flex-col md:flex-row p-6 gap-12 bg-secondaryLight dark:bg-secondaryDark rounded-md">
+						<img
+							className="w-24 h-24 rounded-full object-cover"
+							src={user.avatar_url}
+							alt="profile"
+						/>
+						<div>
+							{/* name and joined date */}
+							<div className="flex items-center justify-between gap-4">
+								<p className="text-[1.2rem] font-bold">{user?.login}</p>
+								<p className="text-[0.8rem]">
+									Joined : {moment(user?.created_at).format("DD MMM YYYY")}
+								</p>
 							</div>
-							<div className="flex flex-col items-center">
-								<p className="text-[0.8rem]">Followers</p>
-								<p className="text-[1rem] font-bold">{user?.followers}</p>
+							{/* username */}
+							<p className="text-[0.8rem] text-red font-bold">{user?.name}</p>
+							{/* bio */}
+							<p className="my-6 text-[0.8rem]">
+								{user?.bio ? user.bio : "This profile has no bio"}{" "}
+							</p>
+							{/* repo, followers and following */}
+							<div className="my-8 bg-primaryLight dark:bg-primaryDark grid grid-cols-3 items-center md:gap-20 px-6 py-4 rounded-md">
+								<div className="flex flex-col items-center">
+									<p className="text-[0.8rem]">Repos</p>
+									<p className="text-[1rem] font-bold">{user?.public_repos}</p>
+								</div>
+								<div className="flex flex-col items-center">
+									<p className="text-[0.8rem]">Followers</p>
+									<p className="text-[1rem] font-bold">{user?.followers}</p>
+								</div>
+								<div className="flex flex-col items-center">
+									<p className="text-[0.8rem]">Following</p>
+									<p className="text-[1rem] font-bold">{user?.following}</p>
+								</div>
 							</div>
-							<div className="flex flex-col items-center">
-								<p className="text-[0.8rem]">Following</p>
-								<p className="text-[1rem] font-bold">{user?.following}</p>
-							</div>
-						</div>
-						{/* location, website and twitter */}
-						<div className="my-8 grid grid-cols-2 gap-4">
-							<div className="flex items-center gap-3">
-								<MapPinIcon className="w-6 h-6" />
-								<p className="text-[0.8rem]">{user?.location}</p>
-							</div>
-							<div className="flex items-center gap-3">
-								<TwitterIcon className="w-6 h-6" />
-								<a
-									href="https://twitter.com/elonmusk"
-									className="text-[0.8rem]"
-								>
-									{user.twitter_username ? user.twitter_username : "-"}
-								</a>
-							</div>
-							<div className="flex items-center gap-3">
-								<LinkIcon className="w-6 h-6" />
-								<a href="https://www.tesla.com/" className="text-[0.8rem]">
-									{user.blog ? user.blog : "-"}
-								</a>
-							</div>
-							<div className="flex items-center gap-3">
-								<GithubIcon className="w-6 h-6" />
-								<a href={user?.html_url} className="text-[0.8rem]" target="_blank">
-									{user?.name}
-								</a>
+							{/* location, website and twitter */}
+							<div className="my-8 grid grid-cols-2 gap-4">
+								<div className="flex items-center gap-3">
+									<MapPinIcon className="w-6 h-6" />
+									<p className="text-[0.8rem]">
+										{user.location ? user.location : "-"}
+									</p>
+								</div>
+								<div className="flex items-center gap-3">
+									<TwitterIcon className="w-6 h-6" />
+									<a
+										href="https://twitter.com/elonmusk"
+										className="text-[0.8rem]"
+									>
+										{user.twitter_username ? user.twitter_username : "-"}
+									</a>
+								</div>
+								<div className="flex items-center gap-3">
+									<LinkIcon className="w-6 h-6" />
+									<a href="https://www.tesla.com/" className="text-[0.8rem]">
+										{user.blog ? user.blog : "-"}
+									</a>
+								</div>
+								<div className="flex items-center gap-3">
+									<GithubIcon className="w-6 h-6" />
+									<a
+										href={user?.html_url}
+										className="text-[0.8rem]"
+										// target="_blank"
+									>
+										{user.name ? user.name : "-"}
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				)}
+				{value !== "" && user.message === "Not Found" && (
+					<div className="w-full text-center p-6 bg-secondaryLight dark:bg-secondaryDark rounded-md">
+						Sorry. Username do not match. Please try again !
+					</div>
+				)}
+
+				{/* error  */}
+				{error === true && (
+					<div className="w-full text-center p-6 bg-secondaryLight dark:bg-secondaryDark rounded-md">
+						Sorry. We couldn't find any results. Please try again !
+					</div>
+				)}
 			</div>
 		</div>
 	);
