@@ -87,7 +87,7 @@ function App() {
   }, [inputValue]);
 
   return (
-    <div className="w-screen h-screen bg-primaryLight dark:bg-primaryDark flex flex-col items-center justify-start gap-8 text-primaryDark dark:text-primaryLight py-28">
+    <div className="w-screen h-screen overflow-y-scroll bg-primaryLight dark:bg-primaryDark flex flex-col items-center justify-start gap-8 text-primaryDark dark:text-primaryLight py-28">
       <div className="flex flex-col items-center justify-center gap-6 px-2">
         <div className="w-full flex items-center justify-between">
           <p className="text-[1rem] font-bold">devFinder</p>
